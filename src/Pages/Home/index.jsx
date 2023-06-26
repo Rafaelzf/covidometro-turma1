@@ -15,17 +15,35 @@ import {
 
 function App() {
   const [countries, setContries] = useState([]);
+  const [searchText, setSearchText] = useState("");
 
   const { isLoading, data, error } = useQuery("data", () =>
     axios.get(`${baseURL}countries`)
   );
 
+  const search = (searchText) => {
+    if (!data?.data.data && !searchText) return;
+
+    const newData = data?.data.data;
+    const value = String(searchText).toLowerCase();
+
+    const countriesFiltered = newData.filter((country) =>
+      country.country.toLowerCase().includes(value)
+    );
+
+    setContries(countriesFiltered);
+  };
+
   useEffect(() => {
     if (data?.data.data) {
-      console.log(data?.data.data);
       setContries(data?.data.data);
     }
   }, [data?.data.data]);
+
+  useEffect(() => {
+    if (!searchText) return;
+    search(searchText);
+  }, [searchText]);
 
   return (
     <PageDefault>
@@ -52,7 +70,7 @@ function App() {
             !isLoading &&
             countries && (
               <ContainerBoxes>
-                <Filter />
+                <Filter searchText={searchText} setSearchText={setSearchText} />
                 {countries.length &&
                   countries.map((countrie) => (
                     <Nation {...countrie} key={countrie.country} />
