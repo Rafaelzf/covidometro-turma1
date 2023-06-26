@@ -1,4 +1,4 @@
-import { PageDefault, Filter } from "../../Components";
+import { PageDefault, Filter, Nation } from "../../Components";
 
 import {
   Container,
@@ -26,6 +26,7 @@ function App() {
         <Main>
           <ContainerBoxes>
             <Filter />
+            <Nation />
           </ContainerBoxes>
         </Main>
       </Container>
