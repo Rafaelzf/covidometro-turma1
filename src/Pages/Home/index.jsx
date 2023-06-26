@@ -1,4 +1,8 @@
-import { PageDefault, Filter, Nation } from "../../Components";
+import { PageDefault, Filter, Nation, BoxDefault } from "../../Components";
+import axios from "axios";
+import { useQuery } from "react-query";
+import { baseURL } from "../../Conections";
+import Loading from "../../Assets/img/loading.gif";
 
 import {
   Container,
@@ -9,6 +13,10 @@ import {
 } from "./styles";
 
 function App() {
+  const { isLoading, data, error } = useQuery("data", () =>
+    axios.get(`${baseURL}countries`)
+  );
+
   return (
     <PageDefault>
       <Container>
@@ -24,10 +32,20 @@ function App() {
           </MainText>
         </Presentation>
         <Main>
-          <ContainerBoxes>
-            <Filter />
-            <Nation />
-          </ContainerBoxes>
+          {isLoading && <BoxDefault>Loading....</BoxDefault>}
+
+          {!isLoading && error ? (
+            <BoxDefault>
+              💢 Infelizmente houve algum erro inexperado. Volte mais tarde. ⛔️
+            </BoxDefault>
+          ) : (
+            !isLoading && (
+              <ContainerBoxes>
+                <Filter />
+                <Nation />
+              </ContainerBoxes>
+            )
+          )}
         </Main>
       </Container>
     </PageDefault>
