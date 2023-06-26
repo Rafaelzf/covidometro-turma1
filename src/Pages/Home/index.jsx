@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { PageDefault, Filter, Nation, BoxDefault } from "../../Components";
 import axios from "axios";
 import { useQuery } from "react-query";
@@ -13,9 +14,18 @@ import {
 } from "./styles";
 
 function App() {
+  const [countries, setContries] = useState([]);
+
   const { isLoading, data, error } = useQuery("data", () =>
     axios.get(`${baseURL}countries`)
   );
+
+  useEffect(() => {
+    if (data?.data.data) {
+      console.log(data?.data.data);
+      setContries(data?.data.data);
+    }
+  }, [data?.data.data]);
 
   return (
     <PageDefault>
@@ -39,10 +49,14 @@ function App() {
               💢 Infelizmente houve algum erro inexperado. Volte mais tarde. ⛔️
             </BoxDefault>
           ) : (
-            !isLoading && (
+            !isLoading &&
+            countries && (
               <ContainerBoxes>
                 <Filter />
-                <Nation />
+                {countries.length &&
+                  countries.map((countrie) => (
+                    <Nation {...countrie} key={countrie.country} />
+                  ))}
               </ContainerBoxes>
             )
           )}
